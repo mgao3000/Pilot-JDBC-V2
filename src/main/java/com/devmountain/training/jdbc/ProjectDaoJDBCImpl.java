@@ -4,6 +4,7 @@ import com.devmountain.training.dao.ProjectDao;
 import com.devmountain.training.model.ProjectModel;
 import com.devmountain.training.model.StudentModel;
 import com.devmountain.training.util.JDBCUtils;
+import com.devmountain.training.util.SQLStatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,19 +15,19 @@ import java.util.List;
 public class ProjectDaoJDBCImpl implements ProjectDao {
     private Logger logger = LoggerFactory.getLogger(ProjectDaoJDBCImpl.class);
 
-    private final String SQL_INSERT_PROJECT = "INSERT INTO PROJECT (NAME, DESCRIPTION, CREATE_DATE) VALUES (?, ?, ?)";
-    private final String SQL_UPDATE_PROJECT = "UPDATE PROJECT SET name=?, description=? , create_date=? where id=?";
-
-    private final String SELECT_ALL_PROJECT = "SELECT * FROM PROJECT";
-    private final String SQL_SELECT_PROJECT_ID_BY_NAME = "SELECT ID FROM PROJECT WHERE NAME=?";
-    private final String SQL_SELECT_PROJECT_BY_ID = "SELECT * FROM PROJECT where id = ?";
-    private final String SQL_SELECT_PROJECT_BY_NAME = "SELECT * FROM PROJECT where name = ?";
-    private final String SELECT_STUDENTS_BY_PROJECT_ID = "SELECT s.* FROM STUDENT s, STUDENT_PROJECT sp where s.ID=sp.STUDENT_ID and sp.PROJECT_ID=?";
-    private final String SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID = "SELECT NAME from MAJOR WHERE ID = ?";
-
-    private final String SQL_DELETE_PROJECT_BY_ID = "DELETE FROM PROJECT where ID=?";
-    private final String SQL_DELETE_PROJECT_BY_NAME = "DELETE FROM PROJECT where NAME=?";
-    private final String SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_PROJECT_ID = "DELETE from STUDENT_PROJECT WHERE PROJECT_ID = ?";
+//    private final String SQL_INSERT_PROJECT = "INSERT INTO PROJECT (NAME, DESCRIPTION, CREATE_DATE) VALUES (?, ?, ?)";
+//    private final String SQL_UPDATE_PROJECT = "UPDATE PROJECT SET name=?, description=? , create_date=? where id=?";
+//
+//    private final String SELECT_ALL_PROJECT = "SELECT * FROM PROJECT";
+//    private final String SQL_SELECT_PROJECT_ID_BY_NAME = "SELECT ID FROM PROJECT WHERE NAME=?";
+//    private final String SQL_SELECT_PROJECT_BY_ID = "SELECT * FROM PROJECT where id = ?";
+//    private final String SQL_SELECT_PROJECT_BY_NAME = "SELECT * FROM PROJECT where name = ?";
+//    private final String SELECT_STUDENTS_BY_PROJECT_ID = "SELECT s.* FROM STUDENT s, STUDENT_PROJECT sp where s.ID=sp.STUDENT_ID and sp.PROJECT_ID=?";
+//    private final String SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID = "SELECT NAME from MAJOR WHERE ID = ?";
+//
+//    private final String SQL_DELETE_PROJECT_BY_ID = "DELETE FROM PROJECT where ID=?";
+//    private final String SQL_DELETE_PROJECT_BY_NAME = "DELETE FROM PROJECT where NAME=?";
+//    private final String SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_PROJECT_ID = "DELETE from STUDENT_PROJECT WHERE PROJECT_ID = ?";
 
 
 
@@ -46,7 +47,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             logger.debug("Insert statement...");
 //            String SQL_INSERT_PROJECT = "INSERT INTO PROJECT (NAME, DESCRIPTION, CREATE_DATE) VALUES (?, ?, ?)";
 //            preparedStatement = dbConnection.prepareStatement(SQL_INSERT);
-            preparedStatement = dbConnection.prepareStatement(SQL_INSERT_PROJECT, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_INSERT_PROJECT, Statement.RETURN_GENERATED_KEYS);
 //            preparedStatement.setLong(1, project.getId());
             preparedStatement.setString(1, project.getName());
             preparedStatement.setString(2, project.getDescription());
@@ -96,7 +97,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             logger.debug("Updating statement...");
 
 //            String SQL_UPDATE_PROJECT = "UPDATE PROJECT SET name=?, description=? , create_date=? where id=?";
-            preparedStatement = dbConnection.prepareStatement(SQL_UPDATE_PROJECT);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_UPDATE_PROJECT);
             preparedStatement.setString(1, project.getName());
             preparedStatement.setString(2, project.getDescription());
             preparedStatement.setTimestamp(3, project.getCreateDateInTimestamp());
@@ -153,7 +154,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
 
             //Step 5: prepare psDeleteProjectByName
 //            String SQL_DELETE_PROJECT_BY_NAME = "DELETE FROM PROJECT where NAME=?";
-            deleteProjectByNamePS = dbConnection.prepareStatement(SQL_DELETE_PROJECT_BY_NAME);
+            deleteProjectByNamePS = dbConnection.prepareStatement(SQLStatementUtils.SQL_DELETE_PROJECT_BY_NAME);
             deleteProjectByNamePS.setString(1, projectName);
 
             //STEP 6: Execute a query
@@ -187,7 +188,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
         PreparedStatement deleteStudentIdsByProjectIdPS = null;
 //        boolean isDeleteSuccessful = false;
         try {
-            deleteStudentIdsByProjectIdPS = dbConnection.prepareStatement(SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_PROJECT_ID);
+            deleteStudentIdsByProjectIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_PROJECT_ID);
             deleteStudentIdsByProjectIdPS.setLong(1, projectId);
 
             //Execute a query
@@ -217,7 +218,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
         Long projectId = null;
         try {
 //            String SQL_SELECT_PROJECT_ID_BY_NAME = "SELECT ID FROM PROJECT WHERE NAME=?";
-            selectProjectIdByProjectNamePS = dbConnection.prepareStatement(SQL_SELECT_PROJECT_ID_BY_NAME);
+            selectProjectIdByProjectNamePS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECT_ID_BY_NAME);
             selectProjectIdByProjectNamePS.setString(1, projectName);
             rs = selectProjectIdByProjectNamePS.executeQuery();
 
@@ -266,7 +267,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
 
             //Step 4: prepare psDeleteProjectByName
 //            String SQL_DELETE_PROJECT_BY_ID = "DELETE FROM PROJECT where ID=?";
-            deleteProjectByIdPS = dbConnection.prepareStatement(SQL_DELETE_PROJECT_BY_ID);
+            deleteProjectByIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_DELETE_PROJECT_BY_ID);
             deleteProjectByIdPS.setLong(1, projectId);
 
             //STEP 5: Execute a query
@@ -318,7 +319,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             //STEP 2: Execute a query
             logger.debug("Creating statement...");
             stmt = dbConnection.createStatement();
-            rs = stmt.executeQuery(SELECT_ALL_PROJECT);
+            rs = stmt.executeQuery(SQLStatementUtils.SELECT_ALL_PROJECT);
 
             //STEP 3: Extract data from result set
             while(rs.next()) {
@@ -368,7 +369,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             //STEP 2: Execute a query
             logger.debug("Creating statement...");
 //            String  SQL_SELECT_PROJECT_BY_ID = "SELECT * FROM PROJECT where id = ?";
-            preparedStatement = dbConnection.prepareStatement(SQL_SELECT_PROJECT_BY_ID);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECT_BY_ID);
             preparedStatement.setLong(1, id);
             rs = preparedStatement.executeQuery();
 
@@ -421,7 +422,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             //STEP 2: Execute a query
             logger.debug("Creating statement...");
 //            String SQL_SELECT_PROJECT_BY_NAME = "SELECT * FROM PROJECT where name = ?";
-            preparedStatement = dbConnection.prepareStatement(SQL_SELECT_PROJECT_BY_NAME);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECT_BY_NAME);
             preparedStatement.setString(1, projectName);
             rs = preparedStatement.executeQuery();
 
@@ -478,7 +479,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             logger.debug("Creating statement...");
             getAllProjectsStatement = dbConnection.createStatement();
 //            String SELECT_ALL_PROJECT = "SELECT * FROM PROJECT";
-            allProjectResultSet = getAllProjectsStatement.executeQuery(SELECT_ALL_PROJECT);
+            allProjectResultSet = getAllProjectsStatement.executeQuery(SQLStatementUtils.SELECT_ALL_PROJECT);
 
 //            String SELECT_STUDENTS_BY_PROJECT_ID = "SELECT s* FROM STUDENT s, STUDENT_PROJECT sp where s.ID=sp.STUDENT_ID and sp.PROJECT_ID=?";
 
@@ -498,7 +499,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
                 project.setCreateDate(createDate);
 
                 //Step 4: Now prepare getStudentsByProjectIdPS and then execute the query using each projectId
-                getStudentsByProjectIdPS = dbConnection.prepareStatement(SELECT_STUDENTS_BY_PROJECT_ID);
+                getStudentsByProjectIdPS = dbConnection.prepareStatement(SQLStatementUtils.SELECT_STUDENTS_BY_PROJECT_ID);
                 getStudentsByProjectIdPS.setLong(1, project.getId());
                 studentListByProjectIdResultSet = getStudentsByProjectIdPS.executeQuery();
 
@@ -506,7 +507,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
                 List<StudentModel> studentList = getStudentList(studentListByProjectIdResultSet);
 
                 //Step 6: use student's major ID to retrieve the associated majorName
-                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                 setStudentMajorNameByMajorId(getMajorNameByMajorIdPS, studentList);
 
                 project.setStudentList(studentList);
@@ -611,7 +612,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
 
             //STEP 2: Prepare getProjectByProjectNamePS and Execute a query to retrieve a project
             logger.debug("Creating statement...");
-            getProjectByProjectIDPS = dbConnection.prepareStatement(SQL_SELECT_PROJECT_BY_ID);
+            getProjectByProjectIDPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECT_BY_ID);
             getProjectByProjectIDPS.setLong(1, projectId);
             projectResultSet = getProjectByProjectIDPS.executeQuery();
 
@@ -631,7 +632,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
                 retrievedProject.setCreateDate(createDate);
 
                 //Step 4: Now prepare getStudentsByProjectIdPS and then execute the query using the retrieved projectId
-                getStudentsByProjectIdPS = dbConnection.prepareStatement(SELECT_STUDENTS_BY_PROJECT_ID);
+                getStudentsByProjectIdPS = dbConnection.prepareStatement(SQLStatementUtils.SELECT_STUDENTS_BY_PROJECT_ID);
                 getStudentsByProjectIdPS.setLong(1, projectId);
                 studentListByProjectIdResultSet = getStudentsByProjectIdPS.executeQuery();
 
@@ -639,7 +640,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
                 List<StudentModel> studentList = getStudentList(studentListByProjectIdResultSet);
 
                 //Step 6: use student's major ID to retrieve the associated majorName
-                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                 setStudentMajorNameByMajorId(getMajorNameByMajorIdPS, studentList);
 
                 retrievedProject.setStudentList(studentList);
@@ -685,7 +686,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
             //STEP 2: Prepare getProjectByProjectNamePS and Execute a query to retrieve a project
             logger.debug("Creating statement...");
 //            String SELECT_A_PROJECT_BY_PROJECT_NAME = "SELECT * FROM PROJECT where name = ?";
-            getProjectByProjectNamePS = dbConnection.prepareStatement(SQL_SELECT_PROJECT_BY_NAME);
+            getProjectByProjectNamePS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECT_BY_NAME);
             getProjectByProjectNamePS.setString(1, projectName);
             projectResultSet = getProjectByProjectNamePS.executeQuery();
 
@@ -705,7 +706,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
                 retrievedProject.setCreateDate(createDate);
 
                 //Step 4: Now prepare getStudentsByProjectIdPS and then execute the query using the retrieved projectId
-                getStudentsByProjectIdPS = dbConnection.prepareStatement(SELECT_STUDENTS_BY_PROJECT_ID);
+                getStudentsByProjectIdPS = dbConnection.prepareStatement(SQLStatementUtils.SELECT_STUDENTS_BY_PROJECT_ID);
                 getStudentsByProjectIdPS.setLong(1, retrievedProject.getId());
                 studentListByProjectIdResultSet = getStudentsByProjectIdPS.executeQuery();
 
@@ -713,7 +714,7 @@ public class ProjectDaoJDBCImpl implements ProjectDao {
                 List<StudentModel> studentList = getStudentList(studentListByProjectIdResultSet);
 
                 //Step 6: use student's major ID to retrieve the associated majorName
-                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                 setStudentMajorNameByMajorId(getMajorNameByMajorIdPS, studentList);
 
                 retrievedProject.setStudentList(studentList);

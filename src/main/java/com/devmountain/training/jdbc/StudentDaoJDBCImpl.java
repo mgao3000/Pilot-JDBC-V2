@@ -4,6 +4,7 @@ import com.devmountain.training.dao.StudentDao;
 import com.devmountain.training.model.ProjectModel;
 import com.devmountain.training.model.StudentModel;
 import com.devmountain.training.util.JDBCUtils;
+import com.devmountain.training.util.SQLStatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,21 +15,21 @@ import java.util.List;
 public class StudentDaoJDBCImpl implements StudentDao {
     private Logger logger = LoggerFactory.getLogger(StudentDaoJDBCImpl.class);
 
-    private final String SQL_INSERT_STUDENT = "INSERT INTO STUDENT (login_name, password, first_name, last_name, email, address, enrolled_DATE, major_id) VALUES (?, ?, ?,?,?,?,?,?)";
-    ;
-    private final String SQL_UPDATE_STUDENT = "UPDATE STUDENT SET login_name=?, password=?, email=?, address=? where id=?";
-
-    private final String SQL_DELETE_STUDENT_BY_LOGIN_NAME = "DELETE FROM STUDENT where LOGIN_NAME=?";
-    private final String SQL_DELETE_STUDENT_BY_ID = "DELETE FROM STUDENT where ID=?";
-    private final String SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_STUDENT_ID = "DELETE from STUDENT_PROJECT WHERE STUDENT_ID = ?";
-
-    private final String SQL_SELECT_ALL_STUDENTS = "SELECT * FROM STUDENT";
-    private final String SQL_SELECT_STUDENTS_BY_MAJOR_ID = "SELECT * FROM STUDENT where major_id = ?";
-    private final String SQL_SELECT_STUDENT_BY_ID = "SELECT * FROM STUDENT where id = ?";
-    private final String SQL_SELECT_STUDENT_BY_LOGIN_NAME = "SELECT * FROM STUDENT where login_name = ?";
-    private final String SQL_SELECT_STUDENT_ID_BY_LOGIN_NAME = "SELECT ID FROM STUDENT where login_name = ?";
-    private final String SQL_SELECT_PROJECTS_BY_STUDENT_ID = "SELECT p.* FROM PROJECT p, STUDENT_PROJECT sp where p.ID=sp.PROJECT_ID and sp.STUDENT_ID=?";
-    private final String SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID = "SELECT NAME from MAJOR WHERE ID = ?";
+//    private final String SQL_INSERT_STUDENT = "INSERT INTO STUDENT (login_name, password, first_name, last_name, email, address, enrolled_DATE, major_id) VALUES (?, ?, ?,?,?,?,?,?)";
+//    ;
+//    private final String SQL_UPDATE_STUDENT = "UPDATE STUDENT SET login_name=?, password=?, email=?, address=? where id=?";
+//
+//    private final String SQL_DELETE_STUDENT_BY_LOGIN_NAME = "DELETE FROM STUDENT where LOGIN_NAME=?";
+//    private final String SQL_DELETE_STUDENT_BY_ID = "DELETE FROM STUDENT where ID=?";
+//    private final String SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_STUDENT_ID = "DELETE from STUDENT_PROJECT WHERE STUDENT_ID = ?";
+//
+//    private final String SQL_SELECT_ALL_STUDENTS = "SELECT * FROM STUDENT";
+//    private final String SQL_SELECT_STUDENTS_BY_MAJOR_ID = "SELECT * FROM STUDENT where major_id = ?";
+//    private final String SQL_SELECT_STUDENT_BY_ID = "SELECT * FROM STUDENT where id = ?";
+//    private final String SQL_SELECT_STUDENT_BY_LOGIN_NAME = "SELECT * FROM STUDENT where login_name = ?";
+//    private final String SQL_SELECT_STUDENT_ID_BY_LOGIN_NAME = "SELECT ID FROM STUDENT where login_name = ?";
+//    private final String SQL_SELECT_PROJECTS_BY_STUDENT_ID = "SELECT p.* FROM PROJECT p, STUDENT_PROJECT sp where p.ID=sp.PROJECT_ID and sp.STUDENT_ID=?";
+//    private final String SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID = "SELECT NAME from MAJOR WHERE ID = ?";
 
     @Override
     public StudentModel save(StudentModel student, Long majorId) {
@@ -45,7 +46,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
             //STEP 2: Execute a query
             logger.debug("Insert statement...");
 //            preparedStatement = dbConnection.prepareStatement(SQL_INSERT);
-            preparedStatement = dbConnection.prepareStatement(SQL_INSERT_STUDENT, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_INSERT_STUDENT, Statement.RETURN_GENERATED_KEYS);
 //            preparedStatement.setLong(1, department.getId());
             preparedStatement.setString(1, student.getLoginName());
             preparedStatement.setString(2, student.getPassword());
@@ -96,7 +97,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
             //STEP 2: Execute a query
             logger.debug("Updating statement...");
 
-            preparedStatement = dbConnection.prepareStatement(SQL_UPDATE_STUDENT);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_UPDATE_STUDENT);
             preparedStatement.setString(1, student.getLoginName());
             preparedStatement.setString(2, student.getPassword());
             preparedStatement.setString(3, student.getEmail());
@@ -149,7 +150,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 //            }
 
             //Step 5: prepare deleteStudentByLoginNamePS
-            deleteStudentByLoginNamePS = dbConnection.prepareStatement(SQL_DELETE_STUDENT_BY_LOGIN_NAME);
+            deleteStudentByLoginNamePS = dbConnection.prepareStatement(SQLStatementUtils.SQL_DELETE_STUDENT_BY_LOGIN_NAME);
             deleteStudentByLoginNamePS.setString(1, loginName);
 
             //STEP 6: Execute a query
@@ -182,7 +183,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 //        boolean isDeleteSuccessful = false;
         try {
             deleteStudentIdsByStudentIdPS = dbConnection.prepareStatement(
-                    SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_STUDENT_ID);
+                    SQLStatementUtils.SQL_DELETE_ALL_STUDENT_AND_PROJECT_IDS_BY_STUDENT_ID);
             deleteStudentIdsByStudentIdPS.setLong(1, studentId);
 
             //Execute a query
@@ -227,8 +228,8 @@ public class StudentDaoJDBCImpl implements StudentDao {
 //                return isStudentDeleted;
 //            }
 
-            //Step 4: prepare deleteStudentByLoginNamePS
-            deleteStudentByIDPS = dbConnection.prepareStatement(SQL_DELETE_STUDENT_BY_ID);
+            //Step 4: prepare deleteStudentByIDPS
+            deleteStudentByIDPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_DELETE_STUDENT_BY_ID);
             deleteStudentByIDPS.setLong(1, studentId);
 
             //STEP 5: Execute a query
@@ -311,7 +312,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                 //STEP 2: Execute a query
                 logger.debug("Creating statement...");
                 stmt = dbConnection.createStatement();
-                rs = stmt.executeQuery(SQL_SELECT_ALL_STUDENTS);
+                rs = stmt.executeQuery(SQLStatementUtils.SQL_SELECT_ALL_STUDENTS);
 
                 //STEP 3: Extract data from result set
                 while (rs.next()) {
@@ -346,7 +347,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 
                 //STEP 2: Execute a query
                 logger.debug("Creating statement...");
-                preparedStatement = dbConnection.prepareStatement(SQL_SELECT_STUDENTS_BY_MAJOR_ID);
+                preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENTS_BY_MAJOR_ID);
                 preparedStatement.setLong(1, majorId);
                 rs = preparedStatement.executeQuery();
 
@@ -383,7 +384,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 
                 //STEP 2: Execute a query
                 logger.debug("Creating statement...");
-                preparedStatement = dbConnection.prepareStatement(SQL_SELECT_STUDENT_BY_ID);
+                preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENT_BY_ID);
                 preparedStatement.setLong(1, id);
                 rs = preparedStatement.executeQuery();
 
@@ -421,7 +422,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 
                 //STEP 2: Execute a query
                 logger.debug("Creating statement...");
-                preparedStatement = dbConnection.prepareStatement(SQL_SELECT_STUDENT_BY_LOGIN_NAME);
+                preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENT_BY_LOGIN_NAME);
                 preparedStatement.setString(1, loginName);
                 rs = preparedStatement.executeQuery();
 
@@ -463,14 +464,14 @@ public class StudentDaoJDBCImpl implements StudentDao {
                 //STEP 2: prepare getAllStudentsStatement and then Execute the query
                 logger.debug("Creating getAllStudentsStatement...");
                 getAllStudentsStatement = dbConnection.createStatement();
-                allStudentResultSet = getAllStudentsStatement.executeQuery(SQL_SELECT_ALL_STUDENTS);
+                allStudentResultSet = getAllStudentsStatement.executeQuery(SQLStatementUtils.SQL_SELECT_ALL_STUDENTS);
 
                 //STEP 3: Extract student data from result set
                 while(allStudentResultSet.next()) {
                     StudentModel retrievedStudent = convertResultSetToStudentModel(allStudentResultSet);
 
                     //Step 4: Now prepare getProjectsByStudentIdPS and then execute the query using each studentId
-                    getProjectsByStudentIdPS = dbConnection.prepareStatement(SQL_SELECT_PROJECTS_BY_STUDENT_ID);
+                    getProjectsByStudentIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECTS_BY_STUDENT_ID);
                     getProjectsByStudentIdPS.setLong(1, retrievedStudent.getId());
                     projectListByStudentIdResultSet = getProjectsByStudentIdPS.executeQuery();
 
@@ -480,7 +481,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                     retrievedStudent.setProjectList(projectList);
 
                     //Step 5: use student's major ID to retrieve the associated majorName
-                    getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                    getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                     getMajorNameByMajorIdPS.setLong(1, retrievedStudent.getMajorId());
                     getMajorNameByMajorIdResultSet = getMajorNameByMajorIdPS.executeQuery();
 
@@ -530,7 +531,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 
                 //STEP 2: prepare getStudentsByMajorIdPS and then Execute the query
                 logger.debug("Creating getStudentsByMajorIdPS...");
-                getStudentsByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_STUDENTS_BY_MAJOR_ID);
+                getStudentsByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENTS_BY_MAJOR_ID);
                 getStudentsByMajorIdPS.setLong(1, majorId);
                 studentByMajorIdResultSet = getStudentsByMajorIdPS.executeQuery();
 
@@ -539,7 +540,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                     StudentModel retrievedStudent = convertResultSetToStudentModel(studentByMajorIdResultSet);
 
                     //Step 4: Now prepare getProjectsByStudentIdPS and then execute the query using each studentId
-                    getProjectsByStudentIdPS = dbConnection.prepareStatement(SQL_SELECT_PROJECTS_BY_STUDENT_ID);
+                    getProjectsByStudentIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECTS_BY_STUDENT_ID);
                     getProjectsByStudentIdPS.setLong(1, retrievedStudent.getId());
                     projectListByStudentIdResultSet = getProjectsByStudentIdPS.executeQuery();
 
@@ -549,7 +550,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                     retrievedStudent.setProjectList(projectList);
 
                     //Step 5: use student's major ID to retrieve the associated majorName
-                    getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                    getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                     getMajorNameByMajorIdPS.setLong(1, retrievedStudent.getMajorId());
                     getMajorNameByMajorIdResultSet = getMajorNameByMajorIdPS.executeQuery();
 
@@ -599,7 +600,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 
                 //STEP 2: Execute a query
                 logger.debug("Creating statement...");
-                getStudentByStudentIdPS = dbConnection.prepareStatement(SQL_SELECT_STUDENT_BY_ID);
+                getStudentByStudentIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENT_BY_ID);
                 getStudentByStudentIdPS.setLong(1, studentId);
                 getStudentByStudentIdResultSet = getStudentByStudentIdPS.executeQuery();
 
@@ -609,7 +610,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                 }
 
                 //Step 4: Now prepare getProjectsByStudentIdPS and then execute the query using each studentId
-                getProjectsByStudentIdPS = dbConnection.prepareStatement(SQL_SELECT_PROJECTS_BY_STUDENT_ID);
+                getProjectsByStudentIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECTS_BY_STUDENT_ID);
                 getProjectsByStudentIdPS.setLong(1, retrievedStudent.getId());
                 projectListByStudentIdResultSet = getProjectsByStudentIdPS.executeQuery();
 
@@ -619,7 +620,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                 retrievedStudent.setProjectList(projectList);
 
                 //Step 5: use student's major ID to retrieve the associated majorName
-                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                 getMajorNameByMajorIdPS.setLong(1, retrievedStudent.getMajorId());
                 getMajorNameByMajorIdResultSet = getMajorNameByMajorIdPS.executeQuery();
 
@@ -668,7 +669,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
 
                 //STEP 2: Execute a query
                 logger.debug("Creating statement...");
-                getStudentByLoginNamePS = dbConnection.prepareStatement(SQL_SELECT_STUDENT_BY_LOGIN_NAME);
+                getStudentByLoginNamePS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENT_BY_LOGIN_NAME);
                 getStudentByLoginNamePS.setString(1, loginName);
                 getStudentByLoginNameResultSet = getStudentByLoginNamePS.executeQuery();
 
@@ -678,7 +679,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                 }
 
                 //Step 4: Now prepare getProjectsByStudentIdPS and then execute the query using each studentId
-                getProjectsByStudentIdPS = dbConnection.prepareStatement(SQL_SELECT_PROJECTS_BY_STUDENT_ID);
+                getProjectsByStudentIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_PROJECTS_BY_STUDENT_ID);
                 getProjectsByStudentIdPS.setLong(1, retrievedStudent.getId());
                 projectListByStudentIdResultSet = getProjectsByStudentIdPS.executeQuery();
 
@@ -688,7 +689,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
                 retrievedStudent.setProjectList(projectList);
 
                 //Step 5: use student's major ID to retrieve the associated majorName
-                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
+                getMajorNameByMajorIdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_MAJOR_NAME_BY_MAJOR_ID);
                 getMajorNameByMajorIdPS.setLong(1, retrievedStudent.getMajorId());
                 getMajorNameByMajorIdResultSet = getMajorNameByMajorIdPS.executeQuery();
 
@@ -781,7 +782,7 @@ public class StudentDaoJDBCImpl implements StudentDao {
             ResultSet rs = null;
             Long studentId = null;
             try {
-                selectStudentIdByLoginNamePS = dbConnection.prepareStatement(SQL_SELECT_STUDENT_ID_BY_LOGIN_NAME);
+                selectStudentIdByLoginNamePS = dbConnection.prepareStatement(SQLStatementUtils.SQL_SELECT_STUDENT_ID_BY_LOGIN_NAME);
                 selectStudentIdByLoginNamePS.setString(1, loginName);
                 rs = selectStudentIdByLoginNamePS.executeQuery();
 

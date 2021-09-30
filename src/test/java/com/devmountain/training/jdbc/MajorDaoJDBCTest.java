@@ -1,9 +1,5 @@
 package com.devmountain.training.jdbc;
 
-import com.devmountain.training.dao.MajorDao;
-import com.devmountain.training.dao.ProjectDao;
-import com.devmountain.training.dao.StudentDao;
-import com.devmountain.training.dao.StudentProjectDao;
 import com.devmountain.training.model.MajorModel;
 import com.devmountain.training.model.ProjectModel;
 import com.devmountain.training.model.StudentModel;
@@ -12,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -34,7 +29,7 @@ public class MajorDaoJDBCTest extends AbstractDaoJDBCTest {
         majorDao = new MajorDaoJDBCImpl();
         studentDao = new StudentDaoJDBCImpl();
         projectDao = new ProjectDaoJDBCImpl();
-        studentProjectDao = new StudentProjectJDBCImpl();
+        studentProjectDao = new StudentProjectDaoJDBCImpl();
     }
 
     @AfterClass

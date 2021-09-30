@@ -4,13 +4,14 @@ import com.devmountain.training.dao.StudentProjectDao;
 import com.devmountain.training.model.ProjectModel;
 import com.devmountain.training.model.StudentModel;
 import com.devmountain.training.util.JDBCUtils;
+import com.devmountain.training.util.SQLStatementUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-public class StudentProjectJDBCImpl implements StudentProjectDao {
-    private Logger logger = LoggerFactory.getLogger(StudentProjectJDBCImpl.class);
+public class StudentProjectDaoJDBCImpl implements StudentProjectDao {
+    private Logger logger = LoggerFactory.getLogger(StudentProjectDaoJDBCImpl.class);
 
     @Override
     public boolean deleteStudentProjectRelationship(StudentModel student, ProjectModel project) {
@@ -29,8 +30,8 @@ public class StudentProjectJDBCImpl implements StudentProjectDao {
             dbConnection = JDBCUtils.getConnection();
 
             //Step 2: prepare deleteStudentProjectRelationshipByStudentAndProjectsIsdPS
-            String SQL_DELETE_STUDENT_PROJECT_RELATIONSHIP_BY_BOTH_IDS = "DELETE FROM STUDENT_PROJECT where STUDENT_ID = ? AND PROJECT_ID = ?";
-            deleteStudentProjectRelationshipByStudentAndProjectsIsdPS = dbConnection.prepareStatement(SQL_DELETE_STUDENT_PROJECT_RELATIONSHIP_BY_BOTH_IDS);
+//            String SQL_DELETE_STUDENT_PROJECT_RELATIONSHIP_BY_BOTH_IDS = "DELETE FROM STUDENT_PROJECT where STUDENT_ID = ? AND PROJECT_ID = ?";
+            deleteStudentProjectRelationshipByStudentAndProjectsIsdPS = dbConnection.prepareStatement(SQLStatementUtils.SQL_DELETE_STUDENT_PROJECT_RELATIONSHIP_BY_BOTH_IDS);
             deleteStudentProjectRelationshipByStudentAndProjectsIsdPS.setLong(1, studentId);
             deleteStudentProjectRelationshipByStudentAndProjectsIsdPS.setLong(2, projectId);
 
@@ -76,9 +77,9 @@ public class StudentProjectJDBCImpl implements StudentProjectDao {
 
             //STEP 2: prepare PreparedStatement
             logger.debug("Insert statement...");
-            String SQL_INSERT = "INSERT INTO STUDENT_PROJECT (STUDENT_ID, PROJECT_ID) VALUES (?, ?)";;
+//            String SQL_INSERT = "INSERT INTO STUDENT_PROJECT (STUDENT_ID, PROJECT_ID) VALUES (?, ?)";;
 //            preparedStatement = dbConnection.prepareStatement(SQL_INSERT);
-            preparedStatement = dbConnection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = dbConnection.prepareStatement(SQLStatementUtils.SQL_INSERT_STUDENT_PROJECT_RELATIONSHIP_BY_BOTH_IDS, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setLong(1, studentId);
             preparedStatement.setLong(2, projectId);
 
