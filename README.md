@@ -5,38 +5,47 @@ code is still against the three dummy tables (MAJOR, STUDENT, PROJECT)
 The relationship between MAJOR and STUDENT is ONE to MANY and the 
 relationship between STUDENT and PROJECT is MANY to MANY. 
 
-##The following methods are added to show how to handle the one-to-many and many-to-many relationship when retrieving operations are implemented 
-###MajorDao: 
+##The following methods are added to show how to handle the one-to-many and many-to-many relationship when retrieving operations are implemented
+
+##MajorDao: 
 ```java
     List<MajorModel> getMajorsWithChildren();
     MajorModel getMajorAndStudentsAndProjectsByMajorId(Long majorId);
     MajorModel getMajorAndStudentsAndProjectsByMajorName(String majorName);
 ```    
-###StudentDao:
+##StudentDao:
 ```
     List<ProjectModel> getProjectsWithAssociatedStudents();
     ProjectModel getProjectWithAssociatedStudentsById(Long projectId);
     ProjectModel getProjectWithAssociatedStudentsByName(String projectName);
 ```
-###ProjectDao: 
+##ProjectDao:
+```
     List<StudentModel> getStudentsWithAssociatedProjects();
     List<StudentModel> getStudentsWithAssociatedProjectsByMajorId(Long majorId);
     StudentModel getStudentWithAssociatedProjectsByStudentId(Long studentId);
     StudentModel getStudentWithAssociatedProjectsByLoginName(String loginName);
+```
+##The following deletion methods are refactored to show how to handle one-to-many and many-to-many relationship
 
-###The following deletion methods are refactored to show how to handle one-to-many and many-to-many relationship
-###MajorDao
+##MajorDao
+```
     boolean deleteByName(String majorName);
     boolean deleteById(Long majorId);
     boolean delete(MajorModel major);
-###StudentDao
+```    
+##StudentDao
+```
     boolean deleteByName(String projectName);
     boolean deleteById(Long projectId);
     boolean delete(ProjectModel project);
-###ProjectDao
+```    
+##ProjectDao
+```
     boolean deleteByLoginName(String loginName);
     boolean deleteById(Long studentId);
     boolean delete(StudentModel student);
+```    
 Here are the DDL used to define the three tables: 
 ```SQL DDL
 DROP TABLE IF EXISTS major CASCADE;
@@ -98,9 +107,6 @@ ALTER TABLE student_project
     ADD CONSTRAINT project_fk FOREIGN KEY ( project_id )
         REFERENCES project ( id );
 ```
-##Notes: 
-Please p
-
 
 ## DAO pattern 
 DAO pattern is used to separate the actual implementation of data 
