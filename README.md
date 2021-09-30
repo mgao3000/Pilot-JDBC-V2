@@ -7,13 +7,17 @@ relationship between STUDENT and PROJECT is MANY to MANY.
 
 ##The following methods are added to show how to handle the one-to-many and many-to-many relationship when retrieving operations are implemented 
 ###MajorDao: 
+```java
     List<MajorModel> getMajorsWithChildren();
     MajorModel getMajorAndStudentsAndProjectsByMajorId(Long majorId);
     MajorModel getMajorAndStudentsAndProjectsByMajorName(String majorName);
+```    
 ###StudentDao:
+```
     List<ProjectModel> getProjectsWithAssociatedStudents();
     ProjectModel getProjectWithAssociatedStudentsById(Long projectId);
     ProjectModel getProjectWithAssociatedStudentsByName(String projectName);
+```
 ###ProjectDao: 
     List<StudentModel> getStudentsWithAssociatedProjects();
     List<StudentModel> getStudentsWithAssociatedProjectsByMajorId(Long majorId);
